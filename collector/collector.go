@@ -72,7 +72,6 @@ func (c *Collector) handle(id string) {
 	m, err := NewMonitor(c.client, id, c.interval)
 	if err != nil {
 		if err == ErrNoNeedToMonitor {
-			log.Printf("no need to monitor %s\n", id)
 			return
 		}
 

@@ -4,6 +4,7 @@ import (
 	"flag"
 	"log"
 	"os"
+	"strconv"
 
 	"path"
 
@@ -12,11 +13,17 @@ import (
 )
 
 func main() {
+	var err error
+	var default_interval int
+	default_interval, err = strconv.Atoi(collector.Getenv("COLLECT_INTERVAL", "10"))
+	if err != nil {
+		log.Fatal(err)
+	}
 	e := flag.String("endpoint", "unix:///var/run/docker.sock", "docker endpoint")
 	c := flag.String("cert", "", "cert path for tls")
-	h := flag.String("host", "", "influxdb server to report")
-	db := flag.String("db", "", "influxdb db where to report")
-	i := flag.Int("interval", 1, "interval to report")
+	h := flag.String("dburl", collector.Getenv("INFLUXDB_URL", ""), "influxdb server to report (env: INFLUXDB_URL)")
+	db := flag.String("db", collector.Getenv("INFLUXDB_DATABASE", ""), "influxdb db where to report (env: INFLUXDB_DATABASE)")
+	i := flag.Int("interval", default_interval, "interval to report (env: COLLECT_INTERVAL)")
 	flag.Parse()
 
 	if *h == "" {
@@ -25,7 +32,6 @@ func main() {
 	}
 
 	var client *docker.Client
-	var err error
 
 	if *c != "" {
 		client, err = docker.NewTLSClient(*e, path.Join(*c, "cert.pem"), path.Join(*c, "key.pem"), path.Join(*c, "ca.pem"))
