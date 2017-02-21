@@ -7,14 +7,15 @@ import (
 
 	"path"
 
-	"github.com/bobrik/collectd-docker/collector"
+	"github.com/forestscribe/collectd-docker/collector"
 	"github.com/fsouza/go-dockerclient"
 )
 
 func main() {
 	e := flag.String("endpoint", "unix:///var/run/docker.sock", "docker endpoint")
 	c := flag.String("cert", "", "cert path for tls")
-	h := flag.String("host", "", "host to report")
+	h := flag.String("host", "", "influxdb server to report")
+	db := flag.String("db", "", "influxdb db where to report")
 	i := flag.Int("interval", 1, "interval to report")
 	flag.Parse()
 
@@ -36,7 +37,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	writer := collector.NewCollectdWriter(*h, os.Stdout)
+	writer := collector.NewInfluxdbWriter(*h, *db, os.Getenv("INFLUXDB_USERNAME"), os.Getenv("INFLUXDB_PASSWORD"))
 
 	collector := collector.NewCollector(client, writer, *i)
 

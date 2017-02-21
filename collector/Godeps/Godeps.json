@@ -1,5 +1,5 @@
 {
-	"ImportPath": "github.com/bobrik/collectd-docker/collector",
+	"ImportPath": "github.com/forestscribe/collectd-docker/collector",
 	"GoVersion": "go1.6",
 	"GodepVersion": "v60",
 	"Deps": [

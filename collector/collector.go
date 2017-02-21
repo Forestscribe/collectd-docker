@@ -19,7 +19,7 @@ type Collector struct {
 
 // NewCollector creates new Collector with specified docker client,
 // collectd stats writer and stat updating interval
-func NewCollector(client *docker.Client, w CollectdWriter, interval int) *Collector {
+func NewCollector(client *docker.Client, w InfluxdbWriter, interval int) *Collector {
 	ch := make(chan Stats)
 
 	// TODO: this can be better, need to figure out how
@@ -72,6 +72,7 @@ func (c *Collector) handle(id string) {
 	m, err := NewMonitor(c.client, id, c.interval)
 	if err != nil {
 		if err == ErrNoNeedToMonitor {
+			log.Printf("no need to monitor %s\n", id)
 			return
 		}
 
@@ -82,6 +83,7 @@ func (c *Collector) handle(id string) {
 
 	go func() {
 		if !c.register(id) {
+			log.Printf("cannot register %s", id)
 			return
 		}
 

@@ -2,19 +2,19 @@ package collector
 
 import (
 	"errors"
-	"strings"
+	"log"
 	"os"
+	"strings"
 
 	"github.com/fsouza/go-dockerclient"
 )
 
 func getenv(env string, defaultValue string) string {
-  var value = os.Getenv(env)
-  if len(value) > 0 {
-    return value
-  } else {
-    return defaultValue
-  }
+	var value = os.Getenv(env)
+	if len(value) > 0 {
+		return value
+	}
+	return defaultValue
 }
 
 var appLabel = getenv("APP_LABEL_KEY", "collectd_docker_app")
@@ -59,12 +59,14 @@ func NewMonitor(c MonitorDockerClient, id string, interval int) (*Monitor, error
 		return nil, err
 	}
 
-	app := sanitizeForGraphite(extractApp(container))
+	app := sanitizeForInfluxDB(extractApp(container))
 	if app == "" {
+		log.Printf("No need to monitor %s %s\n", id, container.Name)
 		return nil, ErrNoNeedToMonitor
 	}
 
-	task := sanitizeForGraphite(extractTask(container))
+	task := sanitizeForInfluxDB(extractTask(container))
+	log.Printf("Monitoring for %s(%s) every %ds", app, task, interval)
 
 	return &Monitor{
 		client:   c,
@@ -104,7 +106,7 @@ func (m *Monitor) handle(ch chan<- Stats) error {
 }
 
 func extractApp(c *docker.Container) string {
-	app := ""
+	var app string
 
 	location := extractMetadata(c, appLocationLabel, appEnvLocationPrefix, "")
 	if location != "" {
@@ -122,7 +124,7 @@ func extractApp(c *docker.Container) string {
 }
 
 func extractTask(c *docker.Container) string {
-	task := defaultTask
+	var task string
 
 	location := extractMetadata(c, taskLocationLabel, taskEnvLocationPrefix, "")
 	if location != "" {
@@ -162,9 +164,9 @@ func extractEnv(c *docker.Container, envPrefix string) string {
 	return ""
 }
 
-func sanitizeForGraphite(s string) string {
+func sanitizeForInfluxDB(s string) string {
 	r := strings.Replace(s, ".", "_", -1)
 
-  // strip leading / and santize any other / for mesos ids  
-  return strings.Replace(strings.TrimPrefix(r, "/"), "/", "_", -1)
+	// strip leading / and santize any other / for mesos ids
+	return strings.Replace(strings.TrimPrefix(r, "/"), "/", "_", -1)
 }

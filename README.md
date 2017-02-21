@@ -1,9 +1,9 @@
-# Collect docker container resource usage
+# Collect docker container resource usage in Marathon/Mesos
 
-This is collectd plugin and docker image to collect resource usage from docker
+This is a docker image to collect resource usage from docker
 containers. Resource usage collected from `docker stats` API and sent to
-graphite installation. Containers can be added and removed on the fly, no need
-to restart collectd.
+influxdb installation. Containers can be added and removed on the fly, no need
+to restart the service.
 
 ## Configuration
 
@@ -101,7 +101,7 @@ Gauges:
 
 Grafana 2 [dashboard](grafana2.json) is included.
 
-![screenshot](https://github.com/bobrik/collectd-docker/raw/master/screenshot.png)
+![screenshot](https://github.com/forestscribe/collectd-docker/raw/master/screenshot.png)
 
 #### Graphite metrics extracted from the dashboard
 
@@ -154,7 +154,7 @@ Minimal command:
 ```
 docker run -d -v /var/run/docker.sock:/var/run/docker.sock \
     -e GRAPHITE_HOST=<graphite host> -e COLLECTD_HOST=<colllectd host> \
-    bobrik/collectd-docker
+    forestscribe/collectd-docker
 ```
 
 ### Environment variables
