@@ -1,53 +1,69 @@
 {
-  "id": 2,
-  "title": "Docker containers",
-  "originalTitle": "Docker containers",
-  "tags": [],
-  "style": "dark",
-  "timezone": "browser",
+  "__inputs": [
+    {
+      "name": "DS_DOCKERSTATS",
+      "label": "dockerstats",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "influxdb",
+      "pluginName": "InfluxDB"
+    }
+  ],
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "4.1.1"
+    },
+    {
+      "type": "panel",
+      "id": "graph",
+      "name": "Graph",
+      "version": ""
+    },
+    {
+      "type": "datasource",
+      "id": "influxdb",
+      "name": "InfluxDB",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "table",
+      "name": "Table",
+      "version": ""
+    }
+  ],
+  "annotations": {
+    "list": []
+  },
   "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
   "hideControls": false,
-  "sharedCrosshair": false,
+  "id": null,
+  "links": [],
+  "refresh": "1m",
   "rows": [
     {
       "collapse": false,
-      "editable": true,
-      "height": "350px",
+      "height": 234,
       "panels": [
         {
-          "aliasColors": {
-            "limit": "#E24D42"
-          },
+          "aliasColors": {},
           "bars": false,
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "fill": 0,
-          "grid": {
-            "leftLogBase": 1,
-            "leftMax": null,
-            "leftMin": 0,
-            "rightLogBase": 1,
-            "rightMax": null,
-            "rightMin": null,
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
-          "id": 3,
+          "datasource": "${DS_DOCKERSTATS}",
+          "fill": 1,
+          "id": 1,
           "legend": {
-            "alignAsTable": true,
-            "avg": true,
-            "current": true,
-            "hideEmpty": true,
-            "max": true,
+            "avg": false,
+            "current": false,
+            "max": false,
             "min": false,
-            "show": true,
-            "sort": "current",
-            "sortDesc": true,
+            "show": false,
             "total": false,
-            "values": true
+            "values": false
           },
           "lines": true,
           "linewidth": 1,
@@ -58,149 +74,257 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
-          "span": 6,
+          "span": 9,
           "stack": false,
           "steppedLine": false,
           "targets": [
             {
-              "hide": false,
-              "target": "aliasByNode(scaleToSeconds(nonNegativeDerivative(collectd.$host.docker_stats.$app.$task.gauge.cpu.total), 1), 3, 4, 1)"
+              "alias": "$tag_app.$col",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "10s"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "app"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "task"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "none"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "cpu",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "total"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "10s"
+                    ],
+                    "type": "non_negative_derivative"
+                  },
+                  {
+                    "params": [
+                      " / 100000000"
+                    ],
+                    "type": "math"
+                  },
+                  {
+                    "params": [
+                      "total"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "tags": []
             }
           ],
+          "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "CPU usage per second",
+          "title": "CPU",
           "tooltip": {
             "shared": false,
-            "value_type": "cumulative"
+            "sort": 0,
+            "value_type": "individual"
           },
           "type": "graph",
-          "x-axis": true,
-          "y-axis": true,
-          "y_formats": [
-            "ns",
-            "short"
+          "xaxis": {
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "percent",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
           ]
         },
         {
-          "aliasColors": {
-            "limit": "#E24D42"
-          },
-          "bars": false,
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "fill": 0,
-          "grid": {
-            "leftLogBase": 1,
-            "leftMax": null,
-            "leftMin": 0,
-            "rightLogBase": 1,
-            "rightMax": null,
-            "rightMin": null,
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
-          "id": 1,
-          "legend": {
-            "alignAsTable": true,
-            "avg": true,
-            "current": true,
-            "hideEmpty": true,
-            "max": true,
-            "min": false,
-            "show": true,
-            "sort": "current",
-            "sortDesc": true,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [
+          "columns": [
             {
-              "alias": "limit",
-              "fill": 1,
-              "linewidth": 2
-            }
-          ],
-          "span": 6,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "hide": false,
-              "target": "alias(averageSeries(collectd.$host.docker_stats.$app.$task.gauge.memory.limit), 'limit')"
+              "text": "Avg",
+              "value": "avg"
             },
             {
-              "hide": false,
-              "target": "aliasByNode(collectd.$host.docker_stats.$app.$task.gauge.memory.usage, 3, 4, 1)"
+              "text": "Max",
+              "value": "max"
+            },
+            {
+              "text": "Current",
+              "value": "current"
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Memory usage",
-          "tooltip": {
-            "shared": false,
-            "value_type": "cumulative"
+          "datasource": "${DS_DOCKERSTATS}",
+          "fontSize": "80%",
+          "id": 4,
+          "links": [],
+          "pageSize": null,
+          "scroll": true,
+          "showHeader": true,
+          "sort": {
+            "col": 2,
+            "desc": true
           },
-          "type": "graph",
-          "x-axis": true,
-          "y-axis": true,
-          "y_formats": [
-            "bytes",
-            "short"
-          ]
+          "span": 3,
+          "styles": [
+            {
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "decimals": 2,
+              "pattern": "Time",
+              "thresholds": [],
+              "type": "date",
+              "unit": "percentunit"
+            },
+            {
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 2,
+              "pattern": "/.*/",
+              "thresholds": [],
+              "type": "number",
+              "unit": "short"
+            }
+          ],
+          "targets": [
+            {
+              "alias": "$tag_app",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "app"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "task"
+                  ],
+                  "type": "tag"
+                }
+              ],
+              "measurement": "cpu",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "total"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "10s"
+                    ],
+                    "type": "non_negative_derivative"
+                  },
+                  {
+                    "params": [
+                      " / 10000000000"
+                    ],
+                    "type": "math"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "title": "",
+          "transform": "timeseries_aggregations",
+          "transparent": true,
+          "type": "table"
         }
       ],
-      "title": "New row"
+      "repeat": null,
+      "repeatIteration": null,
+      "repeatRowId": null,
+      "showTitle": false,
+      "title": "Dashboard Row",
+      "titleSize": "h6"
     },
     {
       "collapse": false,
-      "editable": true,
-      "height": "350px",
+      "height": 224,
       "panels": [
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "fill": 0,
-          "grid": {
-            "leftLogBase": 1,
-            "leftMax": null,
-            "leftMin": 0,
-            "rightLogBase": 1,
-            "rightMax": null,
-            "rightMin": null,
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
+          "datasource": "${DS_DOCKERSTATS}",
+          "fill": 1,
           "id": 2,
-          "leftYAxisLabel": "",
           "legend": {
-            "alignAsTable": true,
-            "avg": true,
-            "current": true,
-            "hideEmpty": true,
-            "max": true,
+            "avg": false,
+            "current": false,
+            "max": false,
             "min": false,
-            "show": true,
-            "sort": "current",
-            "sortDesc": true,
+            "show": false,
             "total": false,
-            "values": true
+            "values": false
           },
           "lines": true,
           "linewidth": 1,
@@ -210,68 +334,680 @@
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
-          "seriesOverrides": [
-            {}
-          ],
-          "span": 6,
+          "seriesOverrides": [],
+          "span": 9,
           "stack": false,
           "steppedLine": false,
           "targets": [
             {
-              "target": "aliasByNode(scaleToSeconds(nonNegativeDerivative(collectd.$host.docker_stats.$app.$task.gauge.net.tx_bytes), 1), 3, 4, 1, 7)"
-            },
-            {
-              "target": "aliasByNode(scaleToSeconds(nonNegativeDerivative(collectd.$host.docker_stats.$app.$task.gauge.net.rx_bytes), 1), 3, 4, 1, 7)"
+              "alias": "$tag_app.$col",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "app"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "task"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "none"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "memory",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "usage"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "usage"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "tags": []
             }
           ],
+          "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Network bytes per second",
+          "title": "Memory",
           "tooltip": {
             "shared": false,
-            "value_type": "cumulative"
+            "sort": 0,
+            "value_type": "individual"
           },
           "type": "graph",
-          "x-axis": true,
-          "y-axis": true,
-          "y_formats": [
-            "bytes",
-            "short"
+          "xaxis": {
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "bytes",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ]
+        },
+        {
+          "columns": [
+            {
+              "text": "Avg",
+              "value": "avg"
+            },
+            {
+              "text": "Max",
+              "value": "max"
+            },
+            {
+              "text": "Current",
+              "value": "current"
+            }
+          ],
+          "datasource": "${DS_DOCKERSTATS}",
+          "fontSize": "80%",
+          "id": 6,
+          "links": [],
+          "pageSize": null,
+          "scroll": true,
+          "showHeader": true,
+          "sort": {
+            "col": 2,
+            "desc": true
+          },
+          "span": 3,
+          "styles": [
+            {
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "decimals": 2,
+              "pattern": "Time",
+              "thresholds": [],
+              "type": "date",
+              "unit": "percentunit"
+            },
+            {
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 2,
+              "pattern": "/.*/",
+              "thresholds": [],
+              "type": "number",
+              "unit": "bytes"
+            }
+          ],
+          "targets": [
+            {
+              "alias": "$tag_app",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "app"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "task"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "none"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "memory",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "usage"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "title": "",
+          "transform": "timeseries_aggregations",
+          "transparent": true,
+          "type": "table"
+        }
+      ],
+      "repeat": null,
+      "repeatIteration": null,
+      "repeatRowId": null,
+      "showTitle": false,
+      "title": "Dashboard Row",
+      "titleSize": "h6"
+    },
+    {
+      "collapse": false,
+      "height": 212,
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": "${DS_DOCKERSTATS}",
+          "fill": 1,
+          "id": 3,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": false,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 9,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$tag_app.$col",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "app"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "none"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "net",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "rx_bytes"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "10s"
+                    ],
+                    "type": "non_negative_derivative"
+                  },
+                  {
+                    "params": [
+                      " / 10"
+                    ],
+                    "type": "math"
+                  },
+                  {
+                    "params": [
+                      "rx"
+                    ],
+                    "type": "alias"
+                  }
+                ],
+                [
+                  {
+                    "params": [
+                      "tx_bytes"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "10s"
+                    ],
+                    "type": "non_negative_derivative"
+                  },
+                  {
+                    "params": [
+                      " / -10"
+                    ],
+                    "type": "math"
+                  },
+                  {
+                    "params": [
+                      "tx"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Net",
+          "tooltip": {
+            "shared": false,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "bytes",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ]
+        },
+        {
+          "columns": [
+            {
+              "text": "Avg",
+              "value": "avg"
+            },
+            {
+              "text": "Max",
+              "value": "max"
+            },
+            {
+              "text": "Current",
+              "value": "current"
+            }
+          ],
+          "datasource": "${DS_DOCKERSTATS}",
+          "fontSize": "80%",
+          "id": 5,
+          "links": [],
+          "pageSize": null,
+          "scroll": true,
+          "showHeader": true,
+          "sort": {
+            "col": 0,
+            "desc": true
+          },
+          "span": 3,
+          "styles": [
+            {
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "decimals": 2,
+              "pattern": "Time",
+              "thresholds": [],
+              "type": "date",
+              "unit": "percentunit"
+            },
+            {
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 2,
+              "pattern": "/.*/",
+              "thresholds": [],
+              "type": "number",
+              "unit": "Bps"
+            }
+          ],
+          "targets": [
+            {
+              "alias": "$tag_app",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "app"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "task"
+                  ],
+                  "type": "tag"
+                }
+              ],
+              "measurement": "net",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "rx_bytes"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "10s"
+                    ],
+                    "type": "non_negative_derivative"
+                  },
+                  {
+                    "params": [
+                      " / 10"
+                    ],
+                    "type": "math"
+                  }
+                ],
+                [
+                  {
+                    "params": [
+                      "tx_bytes"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "10s"
+                    ],
+                    "type": "non_negative_derivative"
+                  },
+                  {
+                    "params": [
+                      " / 10"
+                    ],
+                    "type": "math"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "title": "",
+          "transform": "timeseries_aggregations",
+          "transparent": true,
+          "type": "table"
+        }
+      ],
+      "repeat": null,
+      "repeatIteration": null,
+      "repeatRowId": null,
+      "showTitle": false,
+      "title": "Dashboard Row",
+      "titleSize": "h6"
+    },
+    {
+      "collapse": false,
+      "height": 259,
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": "${DS_DOCKERSTATS}",
+          "fill": 1,
+          "id": 7,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 9,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$tag_task",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "task"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "app"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "none"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "memory",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "usage"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "10s"
+                    ],
+                    "type": "derivative"
+                  },
+                  {
+                    "params": [
+                      " / 10"
+                    ],
+                    "type": "math"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "app",
+                  "operator": "=",
+                  "value": "ci_buildbot_buildbot"
+                }
+              ]
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Buildbot master memory grow rate",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "Bps",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
           ]
         },
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "fill": 0,
-          "grid": {
-            "leftLogBase": 1,
-            "leftMax": null,
-            "leftMin": 0,
-            "rightLogBase": 1,
-            "rightMax": null,
-            "rightMin": null,
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
-          "id": 4,
-          "leftYAxisLabel": "",
+          "datasource": "${DS_DOCKERSTATS}",
+          "fill": 1,
+          "id": 8,
           "legend": {
-            "alignAsTable": true,
-            "avg": true,
-            "current": true,
-            "hideEmpty": true,
-            "max": true,
+            "avg": false,
+            "current": false,
+            "max": false,
             "min": false,
             "show": true,
-            "sort": "current",
-            "sortDesc": true,
             "total": false,
-            "values": true
+            "values": false
           },
           "lines": true,
           "linewidth": 1,
@@ -281,163 +1017,147 @@
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
-          "seriesOverrides": [
-            {}
-          ],
-          "span": 6,
+          "seriesOverrides": [],
+          "span": 3,
           "stack": false,
           "steppedLine": false,
           "targets": [
             {
-              "target": "aliasByNode(scaleToSeconds(nonNegativeDerivative(collectd.$host.docker_stats.$app.$task.gauge.net.tx_packets), 1), 3, 4, 1, 7)"
-            },
-            {
-              "target": "aliasByNode(scaleToSeconds(nonNegativeDerivative(collectd.$host.docker_stats.$app.$task.gauge.net.rx_packets), 1), 3, 4, 1, 7)"
+              "alias": "$tag_app",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "task"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "app"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "none"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "memory",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "usage"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "app",
+                  "operator": "=",
+                  "value": "ci_buildbot_buildbot"
+                }
+              ]
             }
           ],
+          "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Network packets per second",
+          "title": "Buildbot master memory",
           "tooltip": {
-            "shared": false,
-            "value_type": "cumulative"
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
           },
           "type": "graph",
-          "x-axis": true,
-          "y-axis": true,
-          "y_formats": [
-            "short",
-            "short"
+          "xaxis": {
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "bytes",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
           ]
         }
       ],
-      "title": "Row"
+      "repeat": null,
+      "repeatIteration": null,
+      "repeatRowId": null,
+      "showTitle": false,
+      "title": "Dashboard Row",
+      "titleSize": "h6"
     }
   ],
-  "nav": [
-    {
-      "collapse": false,
-      "enable": true,
-      "notice": false,
-      "now": true,
-      "refresh_intervals": [
-        "5s",
-        "10s",
-        "30s",
-        "1m",
-        "5m",
-        "15m",
-        "30m",
-        "1h",
-        "2h",
-        "1d"
-      ],
-      "status": "Stable",
-      "time_options": [
-        "5m",
-        "15m",
-        "1h",
-        "6h",
-        "12h",
-        "24h",
-        "2d",
-        "7d",
-        "30d"
-      ],
-      "type": "timepicker"
-    }
-  ],
-  "time": {
-    "from": "now-1h",
-    "to": "now"
-  },
+  "schemaVersion": 14,
+  "style": "dark",
+  "tags": [],
   "templating": {
-    "list": [
-      {
-        "allFormat": "wildcard",
-        "current": {
-          "text": "All",
-          "value": "*"
-        },
-        "datasource": null,
-        "includeAll": true,
-        "name": "host",
-        "options": [
-          {
-            "text": "All",
-            "value": "*"
-          },
-          {
-            "text": "callisto",
-            "value": "callisto"
-          }
-        ],
-        "query": "collectd.*",
-        "refresh": true,
-        "refresh_on_load": false,
-        "type": "query"
-      },
-      {
-        "allFormat": "glob",
-        "current": {
-          "text": "zookeeper",
-          "value": "zookeeper"
-        },
-        "datasource": null,
-        "includeAll": false,
-        "name": "app",
-        "options": [
-          {
-            "text": "marathon",
-            "value": "marathon"
-          },
-          {
-            "text": "mesos-master",
-            "value": "mesos-master"
-          },
-          {
-            "text": "mesos-slave",
-            "value": "mesos-slave"
-          },
-          {
-            "text": "zookeeper",
-            "value": "zookeeper"
-          }
-        ],
-        "query": "collectd.$host.docker_stats.*",
-        "refresh": true,
-        "refresh_on_load": false,
-        "type": "query"
-      },
-      {
-        "allFormat": "wildcard",
-        "current": {
-          "text": "All",
-          "value": "*"
-        },
-        "datasource": null,
-        "includeAll": true,
-        "name": "task",
-        "options": [
-          {
-            "text": "All",
-            "value": "*"
-          },
-          {
-            "text": "default",
-            "value": "default"
-          }
-        ],
-        "query": "collectd.$host.docker_stats.$app.*",
-        "refresh": true,
-        "refresh_on_load": false,
-        "type": "query"
-      }
-    ]
-  },
-  "annotations": {
     "list": []
   },
-  "schemaVersion": 6,
-  "version": 24
+  "time": {
+    "from": "now-15m",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ],
+    "time_options": [
+      "5m",
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h",
+      "2d",
+      "7d",
+      "30d"
+    ]
+  },
+  "timezone": "browser",
+  "title": "Docker dashboard",
+  "version": 5
 }
