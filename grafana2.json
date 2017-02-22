@@ -143,7 +143,13 @@
                   }
                 ]
               ],
-              "tags": []
+              "tags": [
+                {
+                  "key": "group1",
+                  "operator": "=~",
+                  "value": "/^$group1$/"
+                }
+              ]
             }
           ],
           "thresholds": [],
@@ -291,7 +297,13 @@
                   }
                 ]
               ],
-              "tags": []
+              "tags": [
+                {
+                  "key": "group1",
+                  "operator": "=~",
+                  "value": "/^$group1$/"
+                }
+              ]
             }
           ],
           "title": "",
@@ -392,7 +404,13 @@
                   }
                 ]
               ],
-              "tags": []
+              "tags": [
+                {
+                  "key": "group1",
+                  "operator": "=~",
+                  "value": "/^$group1$/"
+                }
+              ]
             }
           ],
           "thresholds": [],
@@ -534,7 +552,13 @@
                   }
                 ]
               ],
-              "tags": []
+              "tags": [
+                {
+                  "key": "group1",
+                  "operator": "=~",
+                  "value": "/^$group1$/"
+                }
+              ]
             }
           ],
           "title": "",
@@ -671,7 +695,13 @@
                   }
                 ]
               ],
-              "tags": []
+              "tags": [
+                {
+                  "key": "group1",
+                  "operator": "=~",
+                  "value": "/^$group1$/"
+                }
+              ]
             }
           ],
           "thresholds": [],
@@ -843,7 +873,13 @@
                   }
                 ]
               ],
-              "tags": []
+              "tags": [
+                {
+                  "key": "group1",
+                  "operator": "=~",
+                  "value": "/^$group1$/"
+                }
+              ]
             }
           ],
           "title": "",
@@ -953,8 +989,8 @@
               "tags": [
                 {
                   "key": "app",
-                  "operator": "=",
-                  "value": "ci_buildbot_buildbot"
+                  "operator": "=~",
+                  "value": "/^$app$/"
                 }
               ]
             }
@@ -962,7 +998,7 @@
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Buildbot master memory grow rate",
+          "title": "$app memory grow rate",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -1072,8 +1108,8 @@
               "tags": [
                 {
                   "key": "app",
-                  "operator": "=",
-                  "value": "ci_buildbot_buildbot"
+                  "operator": "=~",
+                  "value": "/^$app$/"
                 }
               ]
             }
@@ -1081,7 +1117,7 @@
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Buildbot master memory",
+          "title": "$app master memory",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -1126,7 +1162,48 @@
   "style": "dark",
   "tags": [],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "${DS_DOCKERSTATS}",
+        "hide": 0,
+        "includeAll": false,
+        "label": null,
+        "multi": false,
+        "name": "group1",
+        "options": [],
+        "query": "SHOW TAG VALUES FROM cpu WITH KEY = \"group1\"",
+        "refresh": 1,
+        "regex": "",
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "${DS_DOCKERSTATS}",
+        "hide": 0,
+        "includeAll": false,
+        "label": null,
+        "multi": false,
+        "name": "app",
+        "options": [],
+        "query": "SHOW TAG VALUES FROM cpu WITH KEY = \"app\"",
+        "refresh": 1,
+        "regex": "",
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      }
+    ]
   },
   "time": {
     "from": "now-15m",
@@ -1159,5 +1236,5 @@
   },
   "timezone": "browser",
   "title": "Docker dashboard",
-  "version": 5
+  "version": 7
 }

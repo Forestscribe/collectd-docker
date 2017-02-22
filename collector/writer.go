@@ -92,8 +92,9 @@ func (writer InfluxdbWriter) writeInts(s Stats) error {
 	for k, v := range metrics {
 		fields[k] = v
 	}
-	writer.addPoint(bp, "net", s.Tags, fields, s.Stats.Read)
-
+	if len(fields) > 0 {
+		writer.addPoint(bp, "net", s.Tags, fields, s.Stats.Read)
+	}
 	// Write the batch
 	if err := c.Write(bp); err != nil {
 		log.Print(err)

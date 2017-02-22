@@ -72,6 +72,7 @@ func NewMonitor(c MonitorDockerClient, id string, interval int) (*Monitor, error
 	extractTagsFromApp(tags, app)
 
 	task := extractTask(container)
+	extractTagsFromTask(tags, task)
 	log.Printf("Monitoring for %s(%s) every %ds", app, task, interval)
 
 	return &Monitor{
