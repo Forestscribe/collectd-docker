@@ -2,8 +2,10 @@ package collector
 
 import (
 	"errors"
-	"github.com/fsouza/go-dockerclient"
+	"reflect"
 	"testing"
+
+	"github.com/fsouza/go-dockerclient"
 )
 
 type fakeMonitorDockerClient struct {
@@ -64,8 +66,8 @@ func TestLabelExtraction(t *testing.T) {
 			},
 			env: []string{},
 		}: {
-			app:  "my_app",
-			task: "my_ta_sk",
+			app:  "my.app",
+			task: "my.ta.sk",
 		},
 		&fakeMonitorDockerClient{
 			labels: map[string]string{
@@ -74,7 +76,7 @@ func TestLabelExtraction(t *testing.T) {
 			},
 			env: []string{},
 		}: {
-			app:  "my_app",
+			app:  "my.app",
 			task: defaultTask,
 		},
 		&fakeMonitorDockerClient{
@@ -85,10 +87,10 @@ func TestLabelExtraction(t *testing.T) {
 			},
 			env: []string{},
 		}: {
-			app:  "my_app",
-			task: "ho_ho_ho",
+			app:  "my.app",
+			task: "ho.ho.ho",
 		},
-		
+
 		// mesos style labels
 		&fakeMonitorDockerClient{
 			labels: map[string]string{
@@ -97,9 +99,9 @@ func TestLabelExtraction(t *testing.T) {
 			},
 			env: []string{},
 		}: {
-			app:  "my_app",
-			task: "my_ta_sk",
-		},		
+			app:  "/my/app",
+			task: "/my/ta/sk",
+		},
 
 		// env
 		&fakeMonitorDockerClient{
@@ -118,8 +120,8 @@ func TestLabelExtraction(t *testing.T) {
 				taskEnvPrefix + "my.ta.sk",
 			},
 		}: {
-			app:  "my_app",
-			task: "my_ta_sk",
+			app:  "my.app",
+			task: "my.ta.sk",
 		},
 		&fakeMonitorDockerClient{
 			labels: map[string]string{},
@@ -138,8 +140,8 @@ func TestLabelExtraction(t *testing.T) {
 				"MESOS_TASK_ID=topface_prod-test_app.c80a053f-f66f-11e4-a977-56847afe9799",
 			},
 		}: {
-			app:  "my_app",
-			task: "topface_prod-test_app_c80a053f-f66f-11e4-a977-56847afe9799",
+			app:  "my.app",
+			task: "topface_prod-test_app.c80a053f-f66f-11e4-a977-56847afe9799",
 		},
 		&fakeMonitorDockerClient{
 			labels: map[string]string{},
@@ -150,7 +152,7 @@ func TestLabelExtraction(t *testing.T) {
 				"MESOS_TASK_ID=topface_prod-test_app.c80a053f-f66f-11e4-a977-56847afe9799",
 			},
 		}: {
-			app:  "my_app",
+			app:  "my.app",
 			task: "c80a053f-f66f-11e4-a977-56847afe9799",
 		},
 	}
@@ -178,5 +180,68 @@ func TestLabelExtraction(t *testing.T) {
 			t.Errorf("expected task %s got %s for %#v", e.task, m.task, c)
 		}
 	}
+
+}
+
+func oneTestExtractTagsFromApp(t *testing.T, app string, exp map[string]string) {
+	tags := map[string]string{}
+	extractTagsFromApp(tags, app)
+	if !reflect.DeepEqual(tags, exp) {
+		t.Errorf("expected tags got %s for %s", tags, exp)
+	}
+}
+
+// test for private function extractTagsFromApp
+func TestExtractTagsFromApp(t *testing.T) {
+	app := "/group/app"
+	exp := map[string]string{
+		"app_id": "/group/app",
+		"app":    "app",
+		"group":  "/group",
+		"group1": "/group",
+	}
+	oneTestExtractTagsFromApp(t, app, exp)
+
+	app = "/group/group2/app"
+	exp = map[string]string{
+		"app_id": "/group/group2/app",
+		"app":    "app",
+		"group":  "/group/group2",
+		"group1": "/group",
+		"group2": "/group/group2",
+	}
+	oneTestExtractTagsFromApp(t, app, exp)
+
+	app = "/app"
+	exp = map[string]string{
+		"app_id": "/app",
+		"app":    "app",
+		"group":  "/",
+	}
+	oneTestExtractTagsFromApp(t, app, exp)
+
+}
+
+func oneTestExtractTagsFromTask(t *testing.T, task string, exp map[string]string) {
+	tags := map[string]string{}
+	extractTagsFromTask(tags, task)
+	if !reflect.DeepEqual(tags, exp) {
+		t.Errorf("expected tags got %s for %s", tags, exp)
+	}
+}
+
+// test for private function extractTagsFromTask
+func TestExtractTagsFromTask(t *testing.T) {
+	task := "ci_artifactory_artifactory.9dc3c24c-f7a7-11e6-bae2-8eadd2be2132"
+	exp := map[string]string{
+		"task":  "ci_artifactory_artifactory.9dc3c24c-f7a7-11e6-bae2-8eadd2be2132",
+		"task1": "ci_artifactory_artifactory",
+		"task2": "9dc3c24c",
+		"task3": "f7a7",
+		"task4": "11e6",
+		"task5": "bae2",
+		"task6": "8eadd2be2132",
+	}
+	oneTestExtractTagsFromTask(t, task, exp)
 
 }

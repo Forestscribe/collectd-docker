@@ -13,8 +13,10 @@ Based on work from @bobrik https://github.com/bobrik/collectd-docker with follow
 - Do not use collectd framework, but rather dump directly into influxdb
 - Use Influxdb instead of graphite
     - Influxdb query langage is arguably easier to understand, and grafana support is better.
+    - Influxdb has arbitrary tags support that match well with marathon groups
     - This drops the 64 characters limitation for app+task names.
 - Works by default on Marathon without configuration (no need anymore to configure COLLECTD_DOCKER_APP_ENV)
+- Create influxdb tags from marathon groups, and taskid splits
 
 ## Configuration
 

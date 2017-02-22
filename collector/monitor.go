@@ -4,6 +4,8 @@ import (
 	"errors"
 	"log"
 	"os"
+	"regexp"
+	"strconv"
 	"strings"
 
 	"github.com/fsouza/go-dockerclient"
@@ -49,24 +51,27 @@ type Monitor struct {
 	id       string
 	app      string
 	task     string
+	tags     map[string]string
 	interval int
 }
 
 // NewMonitor creates new monitor with specified docker client,
 // container id and stat updating interval
 func NewMonitor(c MonitorDockerClient, id string, interval int) (*Monitor, error) {
+	tags := map[string]string{}
 	container, err := c.InspectContainer(id)
 	if err != nil {
 		return nil, err
 	}
+	app := extractApp(container)
 
-	app := sanitizeForInfluxDB(extractApp(container))
 	if app == "" {
 		log.Printf("No need to monitor %s %s\n", id, container.Name)
 		return nil, ErrNoNeedToMonitor
 	}
+	extractTagsFromApp(tags, app)
 
-	task := sanitizeForInfluxDB(extractTask(container))
+	task := extractTask(container)
 	log.Printf("Monitoring for %s(%s) every %ds", app, task, interval)
 
 	return &Monitor{
@@ -74,6 +79,7 @@ func NewMonitor(c MonitorDockerClient, id string, interval int) (*Monitor, error
 		id:       container.ID,
 		app:      app,
 		task:     task,
+		tags:     tags,
 		interval: interval,
 	}, nil
 }
@@ -90,8 +96,7 @@ func (m *Monitor) handle(ch chan<- Stats) error {
 			}
 
 			ch <- Stats{
-				App:   m.app,
-				Task:  m.task,
+				Tags:  m.tags,
 				Stats: *s,
 			}
 
@@ -165,9 +170,27 @@ func extractEnv(c *docker.Container, envPrefix string) string {
 	return ""
 }
 
-func sanitizeForInfluxDB(s string) string {
-	r := strings.Replace(s, ".", "_", -1)
+func extractTagsFromApp(tags map[string]string, app string) {
+	tags["app_id"] = app
+	split := strings.Split(app, "/")
+	tags["app"] = split[len(split)-1]
+	split = split[:len(split)-1]
+	if len(split) <= 1 {
+		tags["group"] = "/"
+	} else {
+		tags["group"] = strings.Join(split, "/")
+		for i := 1; i < len(split); i++ {
+			tags["group"+strconv.Itoa(i)] = strings.Join(split[:i+1], "/")
+		}
+	}
+}
 
-	// strip leading / and santize any other / for mesos ids
-	return strings.Replace(strings.TrimPrefix(r, "/"), "/", "_", -1)
+var splitregexp = regexp.MustCompile("[-.]")
+
+func extractTagsFromTask(tags map[string]string, task string) {
+	split := splitregexp.Split(task, -1)
+	tags["task"] = task
+	for i := 0; i < len(split); i++ {
+		tags["task"+strconv.Itoa(i+1)] = split[i]
+	}
 }

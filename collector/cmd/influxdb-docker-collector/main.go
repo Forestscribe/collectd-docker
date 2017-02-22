@@ -14,8 +14,8 @@ import (
 
 func main() {
 	var err error
-	var default_interval int
-	default_interval, err = strconv.Atoi(collector.Getenv("COLLECT_INTERVAL", "10"))
+	var defaultInterval int
+	defaultInterval, err = strconv.Atoi(collector.Getenv("COLLECT_INTERVAL", "10"))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -23,7 +23,7 @@ func main() {
 	c := flag.String("cert", "", "cert path for tls")
 	h := flag.String("dburl", collector.Getenv("INFLUXDB_URL", ""), "influxdb server to report (env: INFLUXDB_URL)")
 	db := flag.String("db", collector.Getenv("INFLUXDB_DATABASE", ""), "influxdb db where to report (env: INFLUXDB_DATABASE)")
-	i := flag.Int("interval", default_interval, "interval to report (env: COLLECT_INTERVAL)")
+	i := flag.Int("interval", defaultInterval, "interval to report (env: COLLECT_INTERVAL)")
 	flag.Parse()
 
 	if *h == "" {

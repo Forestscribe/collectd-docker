@@ -49,18 +49,15 @@ func (writer InfluxdbWriter) writeInts(s Stats) error {
 		log.Print(err)
 		return err
 	}
-	tags := map[string]string{
-		"app":  s.App,
-		"task": s.Task,
-	}
+
 	// influxdb only supoprt int64 (not uint64), thus we need to convert everything to int64
-	writer.addPoint(bp, "cpu", tags, map[string]interface{}{
+	writer.addPoint(bp, "cpu", s.Tags, map[string]interface{}{
 		"user":   int64(s.Stats.CPUStats.CPUUsage.UsageInUsermode),
 		"system": int64(s.Stats.CPUStats.CPUUsage.UsageInKernelmode),
 		"total":  int64(s.Stats.CPUStats.CPUUsage.TotalUsage),
 	}, s.Stats.Read)
 
-	writer.addPoint(bp, "memory", tags, map[string]interface{}{
+	writer.addPoint(bp, "memory", s.Tags, map[string]interface{}{
 		"limit":         int64(s.Stats.MemoryStats.Limit),
 		"max":           int64(s.Stats.MemoryStats.MaxUsage),
 		"usage":         int64(s.Stats.MemoryStats.Usage),
@@ -95,7 +92,7 @@ func (writer InfluxdbWriter) writeInts(s Stats) error {
 	for k, v := range metrics {
 		fields[k] = v
 	}
-	writer.addPoint(bp, "net", tags, fields, s.Stats.Read)
+	writer.addPoint(bp, "net", s.Tags, fields, s.Stats.Read)
 
 	// Write the batch
 	if err := c.Write(bp); err != nil {
@@ -116,7 +113,7 @@ func (writer InfluxdbWriter) writeInts(s Stats) error {
 func (writer InfluxdbWriter) addPoint(bp client.BatchPoints, name string, tags map[string]string, fields map[string]interface{}, t time.Time) {
 	pt, err := client.NewPoint(name, tags, fields, t)
 	if err != nil {
-		log.Print(err)
+		log.Print(err, name, tags, fields)
 		return
 	}
 	bp.AddPoint(pt)
