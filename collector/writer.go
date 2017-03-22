@@ -37,7 +37,7 @@ func (writer InfluxdbWriter) writeInts(s Stats) error {
 	c, err := client.NewHTTPClient(writer.config)
 	if err != nil {
 		log.Print(err)
-    c.Close()
+		c.Close()
 		return err
 	}
 
@@ -48,7 +48,7 @@ func (writer InfluxdbWriter) writeInts(s Stats) error {
 	})
 	if err != nil {
 		log.Print(err)
-    c.Close()
+		c.Close()
 		return err
 	}
 
@@ -107,10 +107,10 @@ func (writer InfluxdbWriter) writeInts(s Stats) error {
 				fmt.Println(response.Results)
 			}
 		}
-    c.Close()
+		c.Close()
 		return err
 	}
-  c.Close()
+	c.Close()
 	return nil
 }
 
